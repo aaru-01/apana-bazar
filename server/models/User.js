@@ -26,7 +26,10 @@ const userSchema = new Schema({
         type: String,
         default: "Prefer not to say",
     },
-
+},
+{
+    timestamps:true,
+});
 
     // name: String,
     // email: String,
@@ -34,7 +37,6 @@ const userSchema = new Schema({
     // mobile:Number,
     // address:String,
     // gender:String,
-});
 
 const User = model("User", userSchema);
 
