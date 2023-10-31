@@ -1,5 +1,7 @@
 body{
     background-color: rgb(212, 206, 222);
+    margin: 0;
+    padding: 0;
     /* background-color: rgb(216, 223, 222); */
 }
 .text-center{

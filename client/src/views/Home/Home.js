@@ -1,10 +1,12 @@
 import React from 'react'
 import "./Home.css"
+import Navbar from '../../components/Navbar/Navbar'
 
 function Home() {
   return (
     <div>
-      hello
+      <Navbar />
+      <h1>home</h1>
     </div>
   )
 }
