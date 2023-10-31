@@ -1,4 +1,4 @@
-import express, { query } from "express";
+import express, { query, response } from "express";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 
@@ -6,7 +6,7 @@ dotenv.config();
 
 import User from "./models/User.js";
 import Product from "./models/Product.js";
-
+import Order from "./models/Order.js";
 
 const app = express();
 app.use(express.json());
@@ -80,6 +80,7 @@ app.post('/login', async (req, res) => {
 });
 
 
+// Products
 // GET/products
 
 app.get('/products', async (req, res) => {
@@ -169,29 +170,142 @@ app.put('/product/:id', async (req, res) => {
 });
 
 // DELETE/ product/:id
-app.delete('/product/:id',async (req,res)=>{
-const { id } = params;
+app.delete('/product/:id', async (req, res) => {
+    const { id } = req.params;
 
 
-await Product.deleteOne({_id:id});
-res.json({
-    success: true,
+    await Product.deleteOne({ _id: id });
+    res.json({
+        success: true,
         message: "Product deleted Sucessfully.."
-});
+    });
 });
 
-// GET / products/search?query=samsang
-app.get('/products/search', async (req, res)=>{
-const { q } = req.query;
+// GET / products/search?query=hp {name is pass here}
+app.get('/products/search', async (req, res) => {
+    const { q } = req.query;
 
-const products = await Product.find({name: {$regex: q, $options: "i"} });
-res.json({
-    success: true,
+    const products = await Product.find({ name: { $regex: q, $options: "i" } });
+    res.json({
+        success: true,
         data: products,
         message: "Product fetched Sucessfully.."
+    })
 })
 
+
+
+// Orders
+
+// POST/Order
+app.post('/order', async (req, res) => {
+    const {
+        user,
+        product,
+        quantity,
+        shippingAddress,
+        deliveryCharges
+
+    } = req.body;
+
+    const order = new Order({
+        user: user,
+        product: product,
+        quantity: quantity,
+        shippingAddress: shippingAddress,
+        deliveryCharges: deliveryCharges,
+    });
+
+    try {
+        const saveOrder = await order.save();
+        res.json({
+            success: true,
+            data: saveOrder,
+            message: "Order Created Sucessfully"
+        })
+
+    }
+    catch (e) {
+        res.json({
+            success: false,
+            message: e.message
+        })
+    }
+});
+
+// GET/Order/:id
+app.get('/order/:id', async (req, res) => {
+    const { id } = req.params;
+
+    const order = await Order.findById(id).populate("user product");
+
+    // clean sensitive data
+    order.user.password = undefined;
+    // order.user.gender = undefined;
+    // order.user.address = undefined;
+    // order.user.createdAt = undefined;
+    // order.user.updatedAt = undefined;
+
+    res.json({
+        succes: true,
+        data: order,
+        message: "Order fetched Successfully.."
+    });
+});
+
+// GER /orders/user/:id
+app.get('/orders/user/:id', async (req, res) => {
+
+    const { id } = req.params;
+
+    const orders = await Order.find({ user: id }).populate('user product')
+
+
+    // remove password from all the order 
+    orders.forEach((order) => {
+
+        order.user.password = undefined
+    })
+
+    res.json({
+        sucess: true,
+        data: orders,
+        message: "Orders fetched sucessfully.."
+    })
 })
+
+
+// PATCH /order/status/:id
+app.patch('/order/status/:id', async (req, res)=>{
+
+     const {id} = req.params;
+
+     const {status} = req.body;
+     await Order.updateOne({_id: id}, {$set:{status}});
+
+res.json({
+    success:true,
+    message:"Order status updated successfully.."
+});
+})
+
+// GET /orders
+app.get('/orders', async (req, res) => {
+
+    const orders = await Order.find().populate("user product");
+
+    // orders.forEach((order) => {
+    //     order.product.description = undefined;
+    // });
+
+    res.json({
+        success: true,
+        data: orders,
+        message: "Order fetched Successfully"
+    });
+});
+
+
 
 const PORT = process.env.PORT || 8080;
 
