@@ -5,6 +5,9 @@ body{
 .text-center{
     text-align: center;
 }
+.text-right{
+    text-align: right;
+}
 .form-control{
     display: block;
     font-size: 16px;

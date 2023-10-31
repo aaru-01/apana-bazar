@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import "./Signup.css"
 import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 function Signup() {
 
@@ -124,6 +125,10 @@ function Signup() {
                 <button type='button'
                     className='btn signup-btn'
                     onClick={signup}>Signup</button>
+
+                <p className="text-right">
+                    <Link to="/login">Already have an account?</Link>
+                </p>
 
             </form>
         </div>
