@@ -1,0 +1,17 @@
+.products-container {
+    display: flex;
+    margin-top: 30px;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.search-bar {
+    width: 350px;
+    display: block;
+    font-size: 20px;
+    margin: 23px auto;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+   
+}

@@ -17,11 +17,11 @@ const orderSchema = new Schema({
     },
     shippingAddress: {
         type: String,
-        // required: true,
+        required: true,
     },
     deliveryCharges: {
         type: Number,
-        default: 0,
+        required:true,
     },
     status: {
         type: String,

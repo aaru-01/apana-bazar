@@ -7,6 +7,7 @@ import Home from "./views/Home/Home"
 import Signup from './views/Signup/Signup';
 import Login from './views/Login/Login';
 import Myorders from './views/Myorders/Myorders';
+import BuyNow from './views/BuyNow/BuyNow';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/orders',
     element: <Myorders />
+  },
+  {
+    path: '/buy/:id',
+    element: <BuyNow />
   }
 ])
 

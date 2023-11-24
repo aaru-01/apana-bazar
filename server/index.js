@@ -208,6 +208,8 @@ app.post('/order', async (req, res) => {
 
     } = req.body;
 
+
+
     const order = new Order({
         user: user,
         product: product,
@@ -215,6 +217,8 @@ app.post('/order', async (req, res) => {
         shippingAddress: shippingAddress,
         deliveryCharges: deliveryCharges,
     });
+
+
 
     try {
         const saveOrder = await order.save();
@@ -276,17 +280,38 @@ app.get('/orders/user/:id', async (req, res) => {
 
 
 // PATCH /order/status/:id
-app.patch('/order/status/:id', async (req, res)=>{
+app.patch('/order/status/:id', async (req, res) => {
 
-     const {id} = req.params;
+    const { id } = req.params;
+    const { status } = req.body;
 
-     const {status} = req.body;
-     await Order.updateOne({_id: id}, {$set:{status}});
+    const STATUS_PRIORITY_MAP = {
+        pending: 0,
+        shipped: 1,
+        delivered: 2,
+        returned: 3,
+        cancelled: 4,
+        rejected: 5
+    }
 
-res.json({
-    success:true,
-    message:"Order status updated successfully.."
-});
+    const order = await Order.findById(id);
+    const currentStatus = order.status;
+
+    const currentPriority = STATUS_PRIORITY_MAP[currentStatus];
+    const newPriority = STATUS_PRIORITY_MAP[status];
+
+    if (currentPriority > newPriority) {
+        return res.json({
+            success: false,
+            message: `${status} cannot be set once order is ${currentStatus}`
+        });
+    }
+    await Order.updateOne({ _id: id }, { $set: { status } });
+
+    res.json({
+        success: true,
+        message: "Order status updated successfully.."
+    });
 })
 
 // GET /orders

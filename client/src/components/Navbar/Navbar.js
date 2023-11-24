@@ -13,11 +13,11 @@ function Navbar() {
     return (
         <div className='Navbar-container'>
             <Link to="/" className='navbar-brand'>
-                D-Mart🛒🎀
+                Queen Mall🛒🎀
             </Link>
 
 
-            <div>
+            <div className='navbar-links-container'>
                 <Link to="/login" className='navbar-link'>
                     Login
                 </Link>
@@ -31,7 +31,7 @@ function Navbar() {
                 </Link>
             </div>
 
-            <div>
+            <div className='navbar-user-container'>
                 Hello, {user.name || "User!"}
 
                 {
@@ -41,8 +41,7 @@ function Navbar() {
                             window.location.href = "/login";
                         }}> Logout </span>
                     )
-                        :
-                        null
+                        : null
                 }
             </div>
         </div>
